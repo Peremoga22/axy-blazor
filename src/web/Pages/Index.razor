@@ -43,7 +43,7 @@
                          </InputSelect>
                     }
                     else
-                    {       
+                    {      
                         
                          <InputSelect class="custom-select" @bind-Value="model.ExpenditureId"  @onclick="(() => Reset())">
                              <option value="">Choose an option</option>
@@ -56,9 +56,8 @@
 
                     <div class="input-group-append">
                         <label class="input-group-text" for="inputGroupSelect02">
-                            <a asp-action="Categories">
-                                <i @onclick="(() => Edit())" style='font-size:14px' class='far'>&#xf044;</i>
-                            </a>
+                            @*<i @onclick="(() => Edit())" style='font-size:14px' class='far'>&#xf044;</i>*@
+                            <img @onclick="(() => Edit())" src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/21/000000/external-edit-interface-kiranshastry-solid-kiranshastry.png" />
                         </label>
 
                     </div>
@@ -133,21 +132,16 @@
         _navigationManager.NavigateTo("/categories/");
     }
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-
-    //}
+  
     public void IsReceiptsExpenditures()
     {
         if(Approved)
         {
-            receiptModel = ReceiptAdapter.GetReceipt();
-            //model.NameCategory = receiptModel.Where(z => z.Id == model.ReceiptId).Select(z => z.Name).FirstOrDefault();
+            receiptModel = ReceiptAdapter.GetReceipt();          
         }
         else
         {
-            expenditureModel = ExpenditureAdapter.GetExpenditure();
-            // model.NameCategory = expenditureModel.Where(z => z.Id == model.ExpenditureId).Select(z => z.Name).FirstOrDefault();
+            expenditureModel = ExpenditureAdapter.GetExpenditure();            
         }
 
         Approved = !Approved;
