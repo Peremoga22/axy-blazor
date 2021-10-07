@@ -25,14 +25,19 @@
                     }
 
                 </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" asp-for="IsIncome" type="checkbox" id="flexSwitchCheckChecked" checked>
-                    <label class="form-check-label" for="flexSwitchCheckChecked" name="Model.IsIncome">Receipts/Expenditures </label>
-                </div>
+               
+                
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" @onclick="IsReceiptsExpenditures" id="flexSwitchCheckChecked"  unchecked />
+                        <label class="form-check-label" for="flexSwitchCheckChecked" name="Model.IsIncome">Receipts/Expenditures </label>
+                    </div>
+                
+               
+
                 <br /><br />
                 <label for="formGroupExampleInput">Category</label><br />
                 <div class="input-group mb-3">
-                    @if (!model.IsIncome)
+                    @if (!Approved)
                     {
                         <select class="custom-select" asp-for="@model.ReceiptId" name="Model.ReceiptId" asp-items="ViewBag.ReceiptId">
                             <option value="Model.NameReceipt"> Choose an option</option>
@@ -79,16 +84,19 @@
 @code{
 
     CategoryDto model = new CategoryDto();
-
+    IEnumerable<ReceiptDto> receiptModel = new List<ReceiptDto>();
+    IEnumerable<ExpenditureDto> expenditureModel = new List<ExpenditureDto>();
+    public bool Approved = false;
 
     protected override async Task OnInitializedAsync()
     {
+        receiptModel = ReceiptAdapter.GetReceipt();
 
     }
 
     private void HandleValidSubmit()
     {
-
+        //  this.StateHasChanged();
     }
 
     protected void Edit()
@@ -99,5 +107,20 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
+    }
+    public void IsReceiptsExpenditures()
+    {
+        if(Approved)
+        {
+            receiptModel = ReceiptAdapter.GetReceipt();
+           
+        }
+        else
+        {
+            expenditureModel = ExpenditureAdapter.GetExpenditure();
+       
+        }
+
+        Approved = !Approved;
     }
 }

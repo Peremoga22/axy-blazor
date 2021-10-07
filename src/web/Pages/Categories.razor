@@ -21,26 +21,18 @@
                         @foreach (var item in receipts)
                         {
                             <tr>
-                                <td class="text-center">@item.Name</td>
-                                <td class="text-right">@item.Sum</td>
+                                <td class="text-center"style="color:green">@item.Name</td>
+                                <td class="text-right"style="color:green">@item.Sum</td>
                                 <td class="text-center">
-                                    <form asp-action="Delete" method="post">
-                                        <a asp-action="EditReceipts" class="btn btn-sm btn-outline-dark"
-                                           asp-route-Id="@item.Id">
-                                            <i style='font-size:14px' class='far'>&#xf044;</i>
-
-                                        </a>
-                                        <input type="hidden" name="Id" value="@item.Id" />
-                                        @*<button type="submit" class="btn btn-danger btn-sm">
-                                                Delete
-                                            </button>*@
-                                    </form>
+                                    <a class="btn btn-sm btn-outline-dark">
+                                        <i  @onclick="(() => EditReceipt(item.Id))" style='font-size:14px'  class='far'>&#xf044;</i>
+                                    </a>
                                 </td>
                             </tr>
                         }
                     </table>
                     <div class="text-left">
-                        <a asp-action="EditReceipts" asp-route-Id="0" class="btn btn-primary">Add Category</a>
+                        <NavLink class="btn btn-outline-secondary" href="/edit-receipt">Add Receipt</NavLink>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -54,24 +46,18 @@
                         @foreach (var item in expenditures)
                         {
                             <tr>
-                                <td class="text-center">@item.Name</td>
-                                <td class="text-right">@item.Sum</td>
+                                <td class="text-center"style="color:red">@item.Name</td>
+                                <td class="text-right"style="color:red">@item.Sum</td>
                                 <td class="text-center">
-                                    <form asp-action="Delete" method="post">
-                                        <a class="btn btn-sm btn-outline-dark">
-                                            <i @onclick="(() => EditExpenditure(item.Id))" style='font-size:14px' class='far'>&#xf044;</i>
-                                        </a>
-                                        <input type="hidden" name="Id" value="@item.Id" />
-                                        <button class="btn btn-danger btn-sm">
-                                            <i @onclick="(() => DeleteExpenditure(item.Id))" style='font-size:14px' class='far'>&#xf044;</i>
-                                        </button>
-                                    </form>
+                                    <a class="btn btn-sm btn-outline-dark">
+                                        <i @onclick="(() => EditExpenditure(item.Id))" style='font-size:14px' class='far'>&#xf044;</i>
+                                    </a>
                                 </td>
                             </tr>
                         }
                     </table>
                     <div class="text-left">
-                        <a asp-action="EditExpenditures" asp-route-Id="0" class="btn btn-primary">Add Category</a>
+                        <NavLink class="btn btn-outline-secondary" href="/edit-expenditure">Add Expenditure</NavLink>
                     </div>
                 </div>
             </div>
@@ -85,28 +71,28 @@
 
 
     List<CategoryDto> model = new List<CategoryDto>();
-    List<ReceiptDto> receipts = new List<ReceiptDto>();
-    List<ExpenditureDto> expenditures = new List<ExpenditureDto>();
+    IEnumerable<ReceiptDto> receipts = new List<ReceiptDto>();
+    IEnumerable<ExpenditureDto> expenditures = new List<ExpenditureDto>();
 
 
     protected override async Task OnInitializedAsync()
     {
+        receipts = ReceiptAdapter.GetReceipt();
+        expenditures = ExpenditureAdapter.GetExpenditure();
+
 
     }
 
-    private void HandleValidSubmit()
-    {
-
-    }
 
     protected void EditExpenditure(int id)
     {
-        _navigationManager.NavigateTo("/categories/");
+        _navigationManager.NavigateTo("/edit-expenditure/" + id);
     }
 
-    protected void DeleteExpenditure(int id)
+
+    protected void EditReceipt(int id)
     {
-        _navigationManager.NavigateTo("/categories/");
+        _navigationManager.NavigateTo("/edit-receipt/" + id);
     }
 
 }
