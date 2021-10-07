@@ -24,32 +24,34 @@
                         <input class="form-control" id="formGroupExampleInput2" name="Model.SumExpenditure" placeholder="Sum">
                     }
 
-                </div>
-               
-                
-                    <div class="form-check form-switch">
+                </div>                               
+                 <div class="form-check form-switch">
                         <input type="checkbox" class="form-check-input" @onclick="IsReceiptsExpenditures" id="flexSwitchCheckChecked"  unchecked />
                         <label class="form-check-label" for="flexSwitchCheckChecked" name="Model.IsIncome">Receipts/Expenditures </label>
-                    </div>
-                
-               
-
-                <br /><br />
+                 </div>                               
+                <br/><br />
                 <label for="formGroupExampleInput">Category</label><br />
                 <div class="input-group mb-3">
                     @if (!Approved)
-                    {
-                        <select class="custom-select" asp-for="@model.ReceiptId" name="Model.ReceiptId" asp-items="ViewBag.ReceiptId">
-                            <option value="Model.NameReceipt"> Choose an option</option>
-                        </select>
+                    {                     
+                         <InputSelect class="custom-select" @bind-Value="model.ReceiptId">
+                             <option value="">Choose an option</option>
+                              @foreach (var r in receiptModel)
+                              {
+                                 <option value="@r.Id">@r.Name</option>
+                              }
+                         </InputSelect>
                     }
                     else
-                    {
-                        <select class="custom-select" asp-for="@model.ExpenditureId" name="Model.ExpenditureId" asp-items="ViewBag.ExpenditureId">
-                            <option value="Model.NameExpenditure"> Choose an option</option>
-                        </select>
+                    {                     
+                         <InputSelect class="custom-select" @bind-Value="model.ExpenditureId">
+                             <option value="">Choose an option</option>
+                              @foreach (var e in expenditureModel)
+                              {
+                                 <option value="@e.Id">@e.Name</option>
+                              }
+                         </InputSelect>
                     }
-
 
                     <div class="input-group-append">
                         <label class="input-group-text" for="inputGroupSelect02">
@@ -90,13 +92,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         receiptModel = ReceiptAdapter.GetReceipt();
 
     }
 
     private void HandleValidSubmit()
     {
-        //  this.StateHasChanged();
+        model = new CategoryDto();
+        this.StateHasChanged();
     }
 
     protected void Edit()
@@ -113,14 +117,15 @@
         if(Approved)
         {
             receiptModel = ReceiptAdapter.GetReceipt();
-           
+
         }
         else
         {
             expenditureModel = ExpenditureAdapter.GetExpenditure();
-       
+
         }
 
         Approved = !Approved;
+        model.IsIncome = Approved;
     }
 }
