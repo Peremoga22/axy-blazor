@@ -1,7 +1,96 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<div class="text-center">
 
-Welcome to your new app.
+    <div>
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome Axy</h1>
+            <EditForm Model="@model" OnValidSubmit="HandleValidSubmit" class="card-body">
+                <div class="form-group">
+                    <label>Date time</label>
+                    <input type="date" class="form-control" name="Model.CurrentDate">
+                </div>
+                <div class="form-group">
+                    @if (!model.IsIncome)
+                    {
+                        <label for="formGroupExampleInput2">Sum</label>
+                        <input class="form-control" id="formGroupExampleInput2" name="Model.SumReceipt" placeholder="Sum">
+                    }
+                    else
+                    {
+                        <label for="formGroupExampleInput2">Sum</label>
+                        <input class="form-control" id="formGroupExampleInput2" name="Model.SumExpenditure" placeholder="Sum">
+                    }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" asp-for="IsIncome" type="checkbox" id="flexSwitchCheckChecked" checked>
+                    <label class="form-check-label" for="flexSwitchCheckChecked" name="Model.IsIncome">Receipts/Expenditures </label>
+                </div>
+                <br /><br />
+                <label for="formGroupExampleInput">Category</label><br />
+                <div class="input-group mb-3">
+                    @if (!model.IsIncome)
+                    {
+                        <select class="custom-select" asp-for="@model.ReceiptId" name="Model.ReceiptId" asp-items="ViewBag.ReceiptId">
+                            <option value="Model.NameReceipt"> Choose an option</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <select class="custom-select" asp-for="@model.ExpenditureId" name="Model.ExpenditureId" asp-items="ViewBag.ExpenditureId">
+                            <option value="Model.NameExpenditure"> Choose an option</option>
+                        </select>
+                    }
+
+
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="inputGroupSelect02">
+                            <a asp-action="Categories">
+                                <i style='font-size:14px' class='far'>&#xf044;</i>
+                            </a>
+                        </label>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput2">Description</label>
+                    <input type="text" class="form-control" id="formGroupExampleInput2" name="Model.DescriptionCategory" placeholder="Add description">
+                </div>
+                <br />
+                <input type="submit" class="btn btn-warning btn-lg" value="Save" />
+       </EditForm>
+</div>
+
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-unstyled text-left">
+                    <li>Current balans: @model.CurrentBalance</li>
+                    <li>Savings for this month: @model.SavingForThisMounth</li>
+                    <li>Balance at the beginning of the month: @model.BalanceTheBeginningMounth</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+
+    CategoryDto model = new CategoryDto();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    private void HandleValidSubmit()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+    }
+}
