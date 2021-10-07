@@ -2,26 +2,26 @@
 @inject NavigationManager _navigationManager
 @inject IJSRuntime _jsRuntime
 
-<div class="text-center">
 
+<div class="text-center">
     <div>
         <div class="jumbotron">
             <h1 class="display-4">Welcome Axy</h1>
             <EditForm Model="@model" OnValidSubmit="HandleValidSubmit" class="card-body">
                 <div class="form-group">
                     <label>Date time</label>
-                    <input type="date" class="form-control" name="Model.CurrentDate">
+                    <input type="date" class="form-control" @bind-value="model.CurrentDate">
                 </div>
                 <div class="form-group">
-                    @if (!model.IsIncome)
+                    @if (!Approved)
                     {
-                        <label for="formGroupExampleInput2">Sum</label>
-                        <input class="form-control" id="formGroupExampleInput2" name="Model.SumReceipt" placeholder="Sum">
+                        <label for="formGroupExampleInput2">Sum</label>                       
+                        <InputNumber  @bind-Value="model.SumReceipt" class="form-control" placeholder="Sum"/>
                     }
                     else
                     {
-                        <label for="formGroupExampleInput2">Sum</label>
-                        <input class="form-control" id="formGroupExampleInput2" name="Model.SumExpenditure" placeholder="Sum">
+                        <label for="formGroupExampleInput2">Sum</label>                       
+                        <InputNumber  @bind-Value="model.SumExpenditure" class="form-control"  placeholder="Sum"/>
                     }
 
                 </div>                               
@@ -30,11 +30,11 @@
                         <label class="form-check-label" for="flexSwitchCheckChecked" name="Model.IsIncome">Receipts/Expenditures </label>
                  </div>                               
                 <br/><br />
-                <label for="formGroupExampleInput">Category</label><br />
+                     <label for="formGroupExampleInput">Category *<span style="color:red">@message</span></label><br />
                 <div class="input-group mb-3">
                     @if (!Approved)
-                    {                     
-                         <InputSelect class="custom-select" @bind-Value="model.ReceiptId">
+                    {                               
+                         <InputSelect class="custom-select" @bind-Value="model.ReceiptId"   @onclick="(() => Reset())">
                              <option value="">Choose an option</option>
                               @foreach (var r in receiptModel)
                               {
@@ -43,8 +43,9 @@
                          </InputSelect>
                     }
                     else
-                    {                     
-                         <InputSelect class="custom-select" @bind-Value="model.ExpenditureId">
+                    {       
+                        
+                         <InputSelect class="custom-select" @bind-Value="model.ExpenditureId"  @onclick="(() => Reset())">
                              <option value="">Choose an option</option>
                               @foreach (var e in expenditureModel)
                               {
@@ -63,8 +64,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="formGroupExampleInput2">Description</label>
-                    <input type="text" class="form-control" id="formGroupExampleInput2" name="Model.DescriptionCategory" placeholder="Add description">
+                    <label for="formGroupExampleInput2">Description</label>                
+                    <InputText id="title" @bind-Value="model.DescriptionCategory" class="form-control"  placeholder="Add description"/>
                 </div>
                 <br />
                 <input type="submit" class="btn btn-warning btn-lg" value="Save" />
@@ -83,24 +84,48 @@
     </div>
 </div>
 
+
 @code{
 
     CategoryDto model = new CategoryDto();
     IEnumerable<ReceiptDto> receiptModel = new List<ReceiptDto>();
     IEnumerable<ExpenditureDto> expenditureModel = new List<ExpenditureDto>();
     public bool Approved = false;
-
+    string message;
     protected override async Task OnInitializedAsync()
     {
-
+        model.CurrentDate = DateTime.Now;
         receiptModel = ReceiptAdapter.GetReceipt();
 
     }
 
     private void HandleValidSubmit()
     {
-        model = new CategoryDto();
-        this.StateHasChanged();
+
+        if(!Approved)
+        {
+            model.NameCategory = receiptModel.Where(z => z.Id == model.ReceiptId).Select(z => z.Name).FirstOrDefault();
+            model.ExpenditureId = 0;
+            model.SumExpenditure = 0;
+        }
+        else
+        {
+            model.NameCategory = expenditureModel.Where(z => z.Id == model.ExpenditureId).Select(z => z.Name).FirstOrDefault();
+            model.ReceiptId = 0;
+            model.SumReceipt = 0;
+        }
+
+        if (model.NameCategory == null)
+        {
+            message = "Please Choose an option!";
+        }
+        else
+        {
+            CategoryAdapter.SaveCategory(model);
+            model = new CategoryDto();
+            model.CurrentDate = DateTime.Now;
+            this.StateHasChanged();
+        }
     }
 
     protected void Edit()
@@ -108,24 +133,29 @@
         _navigationManager.NavigateTo("/categories/");
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
 
-    }
+    //}
     public void IsReceiptsExpenditures()
     {
         if(Approved)
         {
             receiptModel = ReceiptAdapter.GetReceipt();
-
+            //model.NameCategory = receiptModel.Where(z => z.Id == model.ReceiptId).Select(z => z.Name).FirstOrDefault();
         }
         else
         {
             expenditureModel = ExpenditureAdapter.GetExpenditure();
-
+            // model.NameCategory = expenditureModel.Where(z => z.Id == model.ExpenditureId).Select(z => z.Name).FirstOrDefault();
         }
 
         Approved = !Approved;
         model.IsIncome = Approved;
+    }
+
+    public void Reset()
+    {
+        message = "";
     }
 }

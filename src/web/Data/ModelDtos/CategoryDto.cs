@@ -15,8 +15,7 @@ namespace web.Data.ModelDtos
         public string NameReceipt { get; set; }
         public decimal SumReceipt { get; set; }
         public string NameExpenditure { get; set; }
-        public decimal SumExpenditure { get; set; }
-        public decimal Income { get; set; }
+        public decimal SumExpenditure { get; set; }       
         public int? ExpenditureId { get; set; }
         public int? ReceiptId { get; set; }
 
