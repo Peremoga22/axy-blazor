@@ -95,6 +95,7 @@
     public bool Approved = false;
     string message;
 
+
     protected override async Task OnInitializedAsync()
     {
         model.CurrentDate = DateTime.Now;
@@ -154,7 +155,7 @@
             model.CurrentBalance = sumReceipt - sumExpenditure;
             model.SavingForThisMounth = sumReceipt - sumExpenditure;
 
-            this.StateHasChanged();
+            _jsRuntime.InvokeVoidAsync("loadScripts");
         }
     }
 
@@ -183,4 +184,8 @@
     {
         message = "";
     }
+
+ 
 }
+
+
