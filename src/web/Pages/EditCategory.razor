@@ -1,8 +1,6 @@
-﻿@page "/"
-
+﻿@page "/edit-category"
+@page "/edit-category/{Id:int}"
 @inject NavigationManager _navigationManager
-@inject IJSRuntime _jsRuntime
-
 
 <div class="text-center">
     <div>
@@ -27,7 +25,7 @@
 
                 </div>
                 <div class="form-check form-switch">
-                    <input type="checkbox" class="form-check-input" @onclick="IsReceiptsExpenditures" id="flexSwitchCheckChecked" unchecked />
+                    <InputCheckbox  @bind-Value="model.IsIncome" type="checkbox" class="form-check-input" @onclick="IsReceiptsExpenditures" id="flexSwitchCheckChecked"  unchecked />
                     <label class="form-check-label" for="flexSwitchCheckChecked" name="Model.IsIncome">Receipts/Expenditures </label>
                 </div>
                 <br /><br />
@@ -56,8 +54,7 @@
                     }
 
                     <div class="input-group-append">
-                        <label class="input-group-text" for="inputGroupSelect02">
-                            @*<i @onclick="(() => Edit())" style='font-size:14px' class='far'>&#xf044;</i>*@
+                        <label class="input-group-text" for="inputGroupSelect02">                           
                             <img @onclick="(() => Edit())" src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/21/000000/external-edit-interface-kiranshastry-solid-kiranshastry.png" />
                         </label>
 
@@ -85,21 +82,33 @@
 </div>
 
 
-@code{
+@code {
     [Parameter]
     public int Id { get; set; }
 
     CategoryDto model = new CategoryDto();
+
     IEnumerable<ReceiptDto> receiptModel = new List<ReceiptDto>();
     IEnumerable<ExpenditureDto> expenditureModel = new List<ExpenditureDto>();
     public bool Approved = false;
+    public string isChecked = "unchecked";
     string message;
 
     protected override async Task OnInitializedAsync()
     {
-        model.CurrentDate = DateTime.Now;
-        receiptModel = ReceiptAdapter.GetReceipt();
 
+        model = CategoryAdapter.GetCategoryDtoId(Id);
+        if (model.ReceiptId > 0)
+        {
+            receiptModel = ReceiptAdapter.GetReceipt();
+
+        }
+        else
+        {
+            expenditureModel = ExpenditureAdapter.GetExpenditure();
+            Approved = true;
+            isChecked = "checked";
+        }
     }
 
     private void HandleValidSubmit()

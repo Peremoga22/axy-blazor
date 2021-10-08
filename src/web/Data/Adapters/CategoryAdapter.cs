@@ -97,7 +97,7 @@ namespace web.Data.Adapters
 
         }
 
-        public static CategoryDto GetReceiptDtoId(int Id)
+        public static CategoryDto GetCategoryDtoId(int Id)
         {
             CategoryDto result = new CategoryDto();
 
