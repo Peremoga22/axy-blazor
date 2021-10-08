@@ -91,24 +91,24 @@
     IEnumerable<ReceiptDto> receiptModel = new List<ReceiptDto>();
     IEnumerable<ExpenditureDto> expenditureModel = new List<ExpenditureDto>();
     public bool Approved = false;
-    public string isChecked = "unchecked";
     string message;
 
     protected override async Task OnInitializedAsync()
     {
-
-        model = CategoryAdapter.GetCategoryDtoId(Id);
-        if (model.ReceiptId > 0)
+        if (Id > 0)
         {
-            receiptModel = ReceiptAdapter.GetReceipt();
+            model = CategoryAdapter.GetCategoryDtoId(Id);
+            if (model.ReceiptId > 0)
+            {
+                receiptModel = ReceiptAdapter.GetReceipt();
+            }
+            else
+            {
+                expenditureModel = ExpenditureAdapter.GetExpenditure();
+                Approved = true;
+            }
+        }
 
-        }
-        else
-        {
-            expenditureModel = ExpenditureAdapter.GetExpenditure();
-            Approved = true;
-            isChecked = "checked";
-        }
     }
 
     private void HandleValidSubmit()
