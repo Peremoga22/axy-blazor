@@ -1,46 +1,29 @@
 ﻿@page "/fetchdata"
+@using web.Data.Adapters;
+@inject IJSRuntime _jsRuntime;
 
-@using web.Data
-@inject WeatherForecastService ForecastService
 
-<h1>Weather forecast</h1>
+ <div id="chartdiv"></div>
+ <button class="btn btn-info" @onclick="GeneratePieChartBlazor">Ok</button>
 
-<p>This component demonstrates fetching data from a service.</p>
+@code{
+    CategoryDto model = new CategoryDto();
+    List<SumPieDto> sumList = new List<SumPieDto>();
+    IEnumerable<CategoryDto> categoryList = new List<CategoryDto>();
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-@code {
-    private WeatherForecast[] forecasts;
-
-    protected override async Task OnInitializedAsync()
+    private async Task GeneratePieChartBlazor()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+
+        categoryList = CategoryAdapter.GetCategorySum();
+
+        sumList.Add(new SumPieDto() { NameCategory = "Work1", SumReceipt = 1400});
+        sumList.Add(new SumPieDto() { NameCategory = "Work2", SumReceipt = 2200 });
+        sumList.Add(new SumPieDto() { NameCategory = "Work3", SumReceipt = 1000 });
+        sumList.Add(new SumPieDto() { NameCategory = "Work4", SumReceipt = 500 });
+
+
+
+
+        await _jsRuntime.InvokeVoidAsync("GeneraPieChart", sumList);
     }
 }
