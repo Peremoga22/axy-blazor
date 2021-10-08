@@ -69,6 +69,7 @@
 
     private void HandleValidSubmit()
     {
+        model.Sum = 0;
         ReceiptAdapter.SaveReceipt(model);
         _navigationManager.NavigateTo("/categories");
     }

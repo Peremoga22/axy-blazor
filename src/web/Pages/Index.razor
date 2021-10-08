@@ -68,7 +68,7 @@
                     <InputText id="title" @bind-Value="model.DescriptionCategory" class="form-control" placeholder="Add description" />
                 </div>
                 <br />
-                <input type="submit" class="btn btn-warning btn-lg" value="Save" />
+                <button type="submit" class="btn btn-outline-warning ">Save</button>
             </EditForm>
         </div>
 
@@ -98,35 +98,62 @@
     protected override async Task OnInitializedAsync()
     {
         model.CurrentDate = DateTime.Now;
-        receiptModel = ReceiptAdapter.GetReceipt();
-
+        receiptModel = ReceiptAdapter.GetReceipt().Where(z=>z.Sum == 0).ToList();
+        var getSum = CategoryAdapter.GetCategorySum();
+        var sumReceipt = getSum.Select(z => z.SumReceipt).FirstOrDefault();
+        var sumExpenditure = getSum.Select(z => z.SumExpenditure).FirstOrDefault();
+        model.CurrentBalance = sumReceipt - sumExpenditure;
+        model.SavingForThisMounth = sumReceipt - sumExpenditure;
+        model.BalanceTheBeginningMounth = sumReceipt;
     }
 
     private void HandleValidSubmit()
     {
-
-        if (!Approved)
-        {
-            model.NameCategory = receiptModel.Where(z => z.Id == model.ReceiptId).Select(z => z.Name).FirstOrDefault();
-            model.ExpenditureId = 0;
-            model.SumExpenditure = 0;
-        }
-        else
-        {
-            model.NameCategory = expenditureModel.Where(z => z.Id == model.ExpenditureId).Select(z => z.Name).FirstOrDefault();
-            model.ReceiptId = 0;
-            model.SumReceipt = 0;
-        }
-
-        if (model.NameCategory == null)
+        if (model.ReceiptId == null && model.ExpenditureId == null)
         {
             message = "Please Choose an option!";
         }
         else
         {
-            CategoryAdapter.SaveCategory(model);
+            if (!Approved)
+            {
+                var receipt = new ReceiptDto();
+                model.NameCategory = receiptModel.Where(z => z.Id == model.ReceiptId).Select(z => z.Name).FirstOrDefault();
+                model.ExpenditureId = 0;
+                model.SumExpenditure = 0;
+                receipt.Id = 0;
+                receipt.Name = model.NameCategory;
+                receipt.Sum = model.SumReceipt;
+                int receiptId =  ReceiptAdapter.SaveReceipt(receipt);
+
+                model.ReceiptId = receiptId;
+                CategoryAdapter.SaveCategory(model);
+            }
+            else
+            {
+                var expenditure = new ExpenditureDto();
+                model.NameCategory = expenditureModel.Where(z => z.Id == model.ExpenditureId).Select(z => z.Name).FirstOrDefault();
+                model.ReceiptId = 0;
+                model.SumReceipt = 0;
+                expenditure.Id = 0;
+                expenditure.Name = model.NameCategory;
+                expenditure.Sum = model.SumExpenditure;
+                int expenditureId = ExpenditureAdapter.SaveExpenditure(expenditure);
+
+                model.ExpenditureId = expenditureId;
+                CategoryAdapter.SaveCategory(model);
+            }
+
+
             model = new CategoryDto();
             model.CurrentDate = DateTime.Now;
+
+            var getSum = CategoryAdapter.GetCategorySum();
+            var sumReceipt = getSum.Select(z => z.SumReceipt).FirstOrDefault();
+            var sumExpenditure = getSum.Select(z => z.SumExpenditure).FirstOrDefault();
+            model.CurrentBalance = sumReceipt - sumExpenditure;
+            model.SavingForThisMounth = sumReceipt - sumExpenditure;
+
             this.StateHasChanged();
         }
     }
@@ -141,11 +168,11 @@
     {
         if (Approved)
         {
-            receiptModel = ReceiptAdapter.GetReceipt();
+            receiptModel = ReceiptAdapter.GetReceipt().Where(z=>z.Sum == 0).ToList();
         }
         else
         {
-            expenditureModel = ExpenditureAdapter.GetExpenditure();
+            expenditureModel = ExpenditureAdapter.GetExpenditure().Where(z => z.Sum == 0).ToList();
         }
 
         Approved = !Approved;

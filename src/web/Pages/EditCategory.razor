@@ -25,7 +25,7 @@
 
                 </div>
                 <div class="form-check form-switch">
-                    <InputCheckbox  @bind-Value="model.IsIncome" type="checkbox" class="form-check-input" @onclick="IsReceiptsExpenditures" id="flexSwitchCheckChecked"  unchecked />
+                    <InputCheckbox @bind-Value="model.IsIncome" type="checkbox" class="form-check-input" @onclick="IsReceiptsExpenditures" id="flexSwitchCheckChecked" unchecked />
                     <label class="form-check-label" for="flexSwitchCheckChecked" name="Model.IsIncome">Receipts/Expenditures </label>
                 </div>
                 <br /><br />
@@ -54,8 +54,8 @@
                     }
 
                     <div class="input-group-append">
-                        <label class="input-group-text" for="inputGroupSelect02">                           
-                            <img @onclick="(() => Edit())" src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/21/000000/external-edit-interface-kiranshastry-solid-kiranshastry.png" />
+                        <label class="input-group-text" for="inputGroupSelect02">
+                            <img @onclick="(() => Delete(model.Id))" src="https://img.icons8.com/color/21/000000/delete-forever.png" />
                         </label>
 
                     </div>
@@ -64,9 +64,15 @@
                     <label for="formGroupExampleInput2">Description</label>
                     <InputText id="title" @bind-Value="model.DescriptionCategory" class="form-control" placeholder="Add description" />
                 </div>
-                <br />
-                <input type="submit" class="btn btn-warning btn-lg" value="Save" />
+                <br/>
+                <div class="row">
+                    <div class="ml-sm-3 m-auto">
+                        <button type="submit" class="btn btn-outline-warning">Save</button>
+                        <NavLink class="btn btn-outline-secondary" href="/get-all-categories">Cancel</NavLink>
+                    </div>                   
+                </div>       
             </EditForm>
+         
         </div>
 
         <div class="card">
@@ -116,15 +122,26 @@
 
         if (!Approved)
         {
+            var receipt = new ReceiptDto();
             model.NameCategory = receiptModel.Where(z => z.Id == model.ReceiptId).Select(z => z.Name).FirstOrDefault();
             model.ExpenditureId = 0;
             model.SumExpenditure = 0;
+            receipt.Id =(int)model.ReceiptId;
+            receipt.Name = model.NameCategory;
+            receipt.Sum = model.SumReceipt;
+            ReceiptAdapter.SaveReceipt(receipt);
+
         }
         else
         {
+            var expenditure = new ExpenditureDto();
             model.NameCategory = expenditureModel.Where(z => z.Id == model.ExpenditureId).Select(z => z.Name).FirstOrDefault();
             model.ReceiptId = 0;
             model.SumReceipt = 0;
+            expenditure.Id = (int)model.ExpenditureId;
+            expenditure.Name = model.NameCategory;
+            expenditure.Sum = model.SumExpenditure;
+            ExpenditureAdapter.SaveExpenditure(expenditure);
         }
 
         if (model.NameCategory == null)
@@ -142,9 +159,14 @@
 
     protected void Edit()
     {
-        _navigationManager.NavigateTo("/categories/");
+        _navigationManager.NavigateTo("/categories");
     }
 
+    public void Delete(int id)
+    {
+        CategoryAdapter.Delete(id);
+        _navigationManager.NavigateTo("/get-all-categories");
+    }
 
     public void IsReceiptsExpenditures()
     {

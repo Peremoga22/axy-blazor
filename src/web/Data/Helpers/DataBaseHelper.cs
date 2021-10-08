@@ -162,17 +162,10 @@ namespace web.Data.Helpers
         }
 
         public static string RawSafeSglDecimal(object s)
-        {
-            //if (s.GetType() == typeof(decimal))
-            //{
-            //    var item = s.ToString().Length;
-            //    string i = s.ToString().Insert(item,".00");
-            //    return i;
-            //}
-
-
-            var res = s.ToString().Replace(",", ".");
-
+        {          
+            var convertDecimal = Convert.ToDecimal(s);
+            var res = convertDecimal.ToString().Replace(",", ".");
+           
             return res;
         }
 

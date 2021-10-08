@@ -31,7 +31,7 @@
                         <a asp-action="Categories">
                         </a>Short Description:<span style="color:red;">*</span>
                     </label>
-                    <InputNumber id="description" @bind-Value="model.Sum" class="form-control" />
+                    <InputNumber id="description" @bind-Value="model.Sum" class="form-control"  />
                 </div>
             </div>
         </div>
@@ -66,6 +66,7 @@
 
     private void HandleValidSubmit()
     {
+        model.Sum = 0;
         ExpenditureAdapter.SaveExpenditure(model);
         _navigationManager.NavigateTo("/categories");
     }

@@ -7,7 +7,7 @@
 
     <div class="main">
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <a href="#" class="p-3" >Costs: @model.SumExpenditure</a>
         </div>
 
         <div class="content px-4">
@@ -15,3 +15,17 @@
         </div>
     </div>
 </div>
+
+@code{ 
+
+    CategoryDto model = new CategoryDto();
+    IEnumerable<CategoryDto> sumExpenditure = new List<CategoryDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        sumExpenditure = CategoryAdapter.GetCategorySum();
+
+        model.SumExpenditure = sumExpenditure.Select(z => z.SumExpenditure).FirstOrDefault();
+    }
+
+}
