@@ -16,10 +16,12 @@
 
         categoryList = CategoryAdapter.GetCategorySum();
 
-        sumList.Add(new SumPieDto() { NameCategory = "Work1", SumReceipt = 1400});
-        sumList.Add(new SumPieDto() { NameCategory = "Work2", SumReceipt = 2200 });
-        sumList.Add(new SumPieDto() { NameCategory = "Work3", SumReceipt = 1000 });
-        sumList.Add(new SumPieDto() { NameCategory = "Work4", SumReceipt = 500 });
+        var resSum = categoryList.Select(z => z.SumReceipt).FirstOrDefault();
+        var exSum = categoryList.Select(z => z.SumExpenditure).FirstOrDefault();
+
+        sumList.Add(new SumPieDto() { NameCategory = "Receipts", SumReceipt = resSum });
+        sumList.Add(new SumPieDto() { NameCategory = "Expenditure", SumReceipt = exSum });
+
 
 
 
