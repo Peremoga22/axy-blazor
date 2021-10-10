@@ -12,7 +12,7 @@ namespace web.Data.ModelDtos
         
         public decimal SumReceipt { get; set; }
         public decimal SumExpenditure { get; set; }
-        public string SumPercentage => this.SumReceipt + "%";
-        //public string SumPercentage => (this.SumExpenditure * 100) / this.SumReceipt + "%";
+        public string SumPercentage => (this.SumExpenditure * 100) / this.SumReceipt + "%";
+      
     }
 }

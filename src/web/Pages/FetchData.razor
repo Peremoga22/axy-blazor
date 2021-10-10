@@ -1,31 +1,50 @@
-﻿@page "/fetchdata"
+﻿@page "/report"
 @using web.Data.Adapters;
 @inject IJSRuntime _jsRuntime;
+@using System.Timers
+@implements IDisposable
+
+<div class="text-center">
+    <div class="jumbotron">
+        <div id="chartdiv"></div>
+        <br />
+        <button class="btn btn btn-outline-info" @onclick="GeneratePieChartBlazor">Generate Pie Chart</button>
+    </div>
+</div>
 
 
- <div id="chartdiv"></div>
- <button class="btn btn-info" @onclick="GeneratePieChartBlazor">Ok</button>
 
 @code{
     CategoryDto model = new CategoryDto();
     List<SumPieDto> sumList = new List<SumPieDto>();
     IEnumerable<CategoryDto> categoryList = new List<CategoryDto>();
+    SumPieDto pie = new SumPieDto();
+    private Timer timerObj = new(1);
 
     private async Task GeneratePieChartBlazor()
     {
 
         categoryList = CategoryAdapter.GetCategorySum();
+        pie.SumExpenditure = categoryList.Select(z => z.SumExpenditure).FirstOrDefault();
+        pie.SumReceipt = categoryList.Select(z => z.SumReceipt).FirstOrDefault();
 
-        var resSum = categoryList.Select(z => z.SumReceipt).FirstOrDefault();
-        var exSum = categoryList.Select(z => z.SumExpenditure).FirstOrDefault();
 
-        sumList.Add(new SumPieDto() { NameCategory = "Receipts", SumReceipt = resSum });
-        sumList.Add(new SumPieDto() { NameCategory = "Expenditure", SumReceipt = exSum });
+        sumList.Add(new SumPieDto() { NameCategory = "Комунальні", SumReceipt = 2000, SumExpenditure = 100 });
+        sumList.Add(new SumPieDto() { NameCategory = "Харчування", SumReceipt = 2000, SumExpenditure = 300}) ;
+        sumList.Add(new SumPieDto() { NameCategory = "Відпочинок", SumReceipt = 2000, SumExpenditure = 500 });
+        sumList.Add(new SumPieDto() { NameCategory = "Cума на залишку", SumReceipt = 2000, SumExpenditure = 1100 });
 
 
 
 
 
         await _jsRuntime.InvokeVoidAsync("GeneraPieChart", sumList);
+
+        //Dispose();
+    }
+
+    public void Dispose()
+    {
+        timerObj?.Dispose();
     }
 }
