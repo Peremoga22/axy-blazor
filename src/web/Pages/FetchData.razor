@@ -19,20 +19,35 @@
     List<SumPieDto> sumList = new List<SumPieDto>();
     IEnumerable<CategoryDto> categoryList = new List<CategoryDto>();
     SumPieDto pie = new SumPieDto();
-    private Timer timerObj = new(1);
+    private Timer timerObj = new(1000);
 
     private async Task GeneratePieChartBlazor()
     {
-
         categoryList = CategoryAdapter.GetCategorySum();
+        int count = 1;
+
         pie.SumExpenditure = categoryList.Select(z => z.SumExpenditure).FirstOrDefault();
         pie.SumReceipt = categoryList.Select(z => z.SumReceipt).FirstOrDefault();
 
+        foreach(var item in categoryList)
+        {
+            sumList.Add(new SumPieDto() { NameCategory = item.DescriptionCategory, SumReceipt = item.BalansRecipt, SumExpenditure = item.SumExpenditure });
 
-        sumList.Add(new SumPieDto() { NameCategory = "Комунальні", SumReceipt = 2000, SumExpenditure = 100 });
-        sumList.Add(new SumPieDto() { NameCategory = "Харчування", SumReceipt = 2000, SumExpenditure = 300}) ;
-        sumList.Add(new SumPieDto() { NameCategory = "Відпочинок", SumReceipt = 2000, SumExpenditure = 500 });
-        sumList.Add(new SumPieDto() { NameCategory = "Cума на залишку", SumReceipt = 2000, SumExpenditure = 1100 });
+            if (categoryList.Count()  == count)
+            {
+                var remainderSum = item.BalansRecipt - item.BalansExpenditure;
+                sumList.Add(new SumPieDto() { NameCategory = "Cума на залишку", SumReceipt = item.BalansRecipt, SumExpenditure = remainderSum });
+                break;
+            }
+
+            count++;
+        }
+
+
+        //sumList.Add(new SumPieDto() { NameCategory = "Комунальні", SumReceipt = 2000, SumExpenditure = 100 });
+        //sumList.Add(new SumPieDto() { NameCategory = "Харчування", SumReceipt = 2000, SumExpenditure = 300}) ;
+        //sumList.Add(new SumPieDto() { NameCategory = "Відпочинок", SumReceipt = 2000, SumExpenditure = 500 });
+        //sumList.Add(new SumPieDto() { NameCategory = "Cума на залишку", SumReceipt = 2000, SumExpenditure = 1100 });
 
 
 
@@ -40,7 +55,7 @@
 
         await _jsRuntime.InvokeVoidAsync("GeneraPieChart", sumList);
 
-        //Dispose();
+        Dispose();
     }
 
     public void Dispose()

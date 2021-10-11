@@ -18,7 +18,8 @@ namespace web.Data.ModelDtos
         public decimal SumExpenditure { get; set; } 
         public int? ExpenditureId { get; set; }
         public int? ReceiptId { get; set; }
-
+        public decimal BalansRecipt { get; set; }
+        public decimal BalansExpenditure { get; set; }
         public decimal CurrentBalance { get; set; } 
         public decimal SavingForThisMounth { get; set; } 
         public decimal BalanceTheBeginningMounth { get; set; } 

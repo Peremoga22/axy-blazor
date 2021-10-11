@@ -155,7 +155,9 @@ namespace web.Data.Adapters
                         DescriptionCategory = DataBaseHelper.GetValueFromRowByName(item, "Description"),
                         CurrentDate = DataBaseHelper.GetDateTimeValueFromRowByName(item, "CurentData"),
                         SumReceipt = DataBaseHelper.GetDecimalValueFromRowByName(item, "SumReceipt"),
-                        SumExpenditure = DataBaseHelper.GetDecimalValueFromRowByName(item, "SumExpenditure")
+                        SumExpenditure = DataBaseHelper.GetDecimalValueFromRowByName(item, "SumExpenditure"),
+                        BalansRecipt = DataBaseHelper.GetDecimalValueFromRowByName(item, "BalansRecipt"),
+                        BalansExpenditure = DataBaseHelper.GetDecimalValueFromRowByName(item, "BalansExpenditure")
                     });
                 }
             }

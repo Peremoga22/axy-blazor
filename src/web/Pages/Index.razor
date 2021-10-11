@@ -101,8 +101,8 @@
         model.CurrentDate = DateTime.Now;
         receiptModel = ReceiptAdapter.GetReceipt().Where(z=>z.Sum == 0).ToList();
         var getSum = CategoryAdapter.GetCategorySum();
-        var sumReceipt = getSum.Select(z => z.SumReceipt).FirstOrDefault();
-        var sumExpenditure = getSum.Select(z => z.SumExpenditure).FirstOrDefault();
+        var sumReceipt = getSum.Select(z => z.BalansRecipt).FirstOrDefault();
+        var sumExpenditure = getSum.Select(z => z.BalansExpenditure).FirstOrDefault();
         model.CurrentBalance = sumReceipt - sumExpenditure;
         model.SavingForThisMounth = sumReceipt - sumExpenditure;
         model.BalanceTheBeginningMounth = sumReceipt;
