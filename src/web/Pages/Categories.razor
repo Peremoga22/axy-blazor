@@ -9,6 +9,7 @@
         <div >
             <h3>Categories</h3>
             <br />
+            <p style="color:red">@message</p>
             <div class="row">
                 <div class="col-sm-6">
                     <h5 class="text-left">Receipts</h5>
@@ -27,9 +28,12 @@
                                     <td class="text-center" style="color:green">@item.Name</td>
                                     <td class="text-right" style="color:green">@item.Sum</td>
                                     <td class="text-center">
-                                        <a class="btn btn-sm btn-outline-dark">
+                                        <button class="btn btn-sm btn-outline-dark">
                                             <i @onclick="(() => EditReceipt(item.Id))" style='font-size:14px' class='far'>&#xf044;</i>
-                                        </a>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <img @onclick="(() => DeleteReceipt(item.Id))" disabled="@DeleteDisabled" src="https://img.icons8.com/ios/21/000000/delete-forever--v1.png" />
+                                        </button>
                                     </td>
                                 </tr>
                             }
@@ -56,9 +60,12 @@
                                     <td class="text-center" style="color:red">@item.Name</td>
                                     <td class="text-right" style="color:red">@item.Sum</td>
                                     <td class="text-center">
-                                        <a class="btn btn-sm btn-outline-dark">
+                                        <button class="btn btn-sm btn-outline-dark">
                                             <i @onclick="(() => EditExpenditure(item.Id))" style='font-size:14px' class='far'>&#xf044;</i>
-                                        </a>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <img @onclick="(() => DeleteExpenditure(item.Id))" disabled="@DeleteDisabled" src="https://img.icons8.com/ios/21/000000/delete-forever--v1.png" />
+                                        </button>
                                     </td>
                                 </tr>
                             }
@@ -77,32 +84,62 @@
 
 @code{
 
-
     List<CategoryDto> model = new List<CategoryDto>();
     IEnumerable<ReceiptDto> receipts = new List<ReceiptDto>();
     IEnumerable<ExpenditureDto> expenditures = new List<ExpenditureDto>();
-
+    string DeleteDisabled { get; set; } = null;
+    string message;
 
     protected override async Task OnInitializedAsync()
     {
         receipts = ReceiptAdapter.GetReceipt();
         expenditures = ExpenditureAdapter.GetExpenditure();
-
-
     }
-
 
     protected void EditExpenditure(int id)
     {
         _navigationManager.NavigateTo("/edit-expenditure/" + id);
     }
 
-
     protected void EditReceipt(int id)
     {
         _navigationManager.NavigateTo("/edit-receipt/" + id);
     }
 
+    private void DeleteReceipt(int id)
+    {
+        DeleteDisabled = "disabled";
+        try
+        {
+            ReceiptAdapter.DeleteReceipt(id);
+            receipts = ReceiptAdapter.GetReceipt();
+            _jsRuntime.InvokeVoidAsync("loadScripts");
+
+        }
+        catch(Exception ex)
+        {
+            message = "Please delete the category first!";
+        }
+
+        DeleteDisabled = null;
+    }
+
+    private void DeleteExpenditure(int id)
+    {
+        DeleteDisabled = "disabled";
+        try
+        {
+            ExpenditureAdapter.DeleteExpenditure(id);
+            expenditures = ExpenditureAdapter.GetExpenditure();
+            _jsRuntime.InvokeVoidAsync("loadScripts");
+        }
+        catch(Exception ex)
+        {
+            message = "Please delete the category first!";
+        }
+
+        DeleteDisabled = null;
+    }
 }
 
 

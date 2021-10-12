@@ -34,12 +34,12 @@
                 }
 
 
-                <td class="text-center">
-                    <a class="btn btn-sm btn-outline-dark">
-                        <i style='font-size:14px' @onclick="(() => Edit(item.Id))" class='far'>&#xf044;</i>
-
-                    </a>
-                </td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-outline-dark">
+                    <i style='font-size:14px' @onclick="(() => Edit(item.Id))" class='far'>&#xf044;</i>
+                </button>
+             
+            </td>
             </tr>
         }
     </tbody>
@@ -50,6 +50,7 @@
 @code {
 
     IEnumerable<CategoryDto> model = new List<CategoryDto>();
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,4 +61,6 @@
     {
         _navigationManager.NavigateTo("/edit-category/" + id);
     }
+
+   
 }
