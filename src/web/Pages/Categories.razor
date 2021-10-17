@@ -29,7 +29,8 @@
                                     <td class="text-right" style="color:green">@item.Sum</td>
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-outline-dark">
-                                            <i @onclick="(() => EditReceipt(item.Id))" style='font-size:14px' class='far fa-edit'></i>
+                                            @*<i @onclick="(() => EditReceipt(item.Id))" style='font-size:14px' class='far fa-edit'></i>*@
+                                            <img @onclick="(() => EditReceipt(item.Id))" src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/21/000000/external-edit-interface-kiranshastry-solid-kiranshastry.png" />
                                         </button>
                                         <button class="btn btn-sm btn-outline-danger">
                                             <img @onclick="(() => DeleteReceipt(item.Id))" disabled="@DeleteDisabled" src="https://img.icons8.com/ios/21/000000/delete-forever--v1.png" />
@@ -61,7 +62,8 @@
                                     <td class="text-right" style="color:red">@item.Sum</td>
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-outline-dark">
-                                            <i @onclick="(() => EditExpenditure(item.Id))" style='font-size:14px' class='far'>&#xf044;</i>
+                                            @*<i @onclick="(() => EditExpenditure(item.Id))" style='font-size:14px' class='far'>&#xf044;</i>*@
+                                            <img @onclick="(() => EditExpenditure(item.Id))" src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/21/000000/external-edit-interface-kiranshastry-solid-kiranshastry.png" />
                                         </button>
                                         <button class="btn btn-sm btn-outline-danger">
                                             <img @onclick="(() => DeleteExpenditure(item.Id))" disabled="@DeleteDisabled" src="https://img.icons8.com/ios/21/000000/delete-forever--v1.png" />
