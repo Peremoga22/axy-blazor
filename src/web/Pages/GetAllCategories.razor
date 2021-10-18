@@ -2,66 +2,67 @@
 @inject NavigationManager _navigationManager
 @inject IJSRuntime _jsRuntime
 
-<table class="table table-striped table-bordered table-sm">
-    <thead>
-        <tr>
-            <th class="text-right">Sum</th>
-            <th class="text-right">Name</th>
-            <th class="text-right">Date Time</th>
-            <th class="text-right">Description</th>
-            <th class="text-center">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in model)
-        {
-
+    <i class="fa fa-bar-chart" style="font-size:36px"></i>
+    <table class="table table-striped table-bordered table-sm">
+        <thead>
             <tr>
-                @if (item.IsIncome)
-                {
-                    <td class="text-right" style="color:red">@item.SumExpenditure</td>
-                    <td class="text-right">@item.NameCategory</td>
-                    <td class="text-right">@item.CurrentDate</td>
-                    <td class="text-right">@item.DescriptionCategory</td>
-
-                }
-                else
-                {
-                    <td class="text-right" style="color:green">@item.SumReceipt</td>
-                    <td class="text-right">@item.NameCategory</td>
-                    <td class="text-right">@item.CurrentDate</td>
-                    <td class="text-right">@item.DescriptionCategory</td>
-                }
-
-
-            <td class="text-center">
-                <button class="btn btn-sm btn-outline-dark">
-                    @*<i style='font-size:14px' @onclick="(() => Edit(item.Id))" class='far fa-edit'></i>*@
-                    <img @onclick="(() => Edit(item.Id))" src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/21/000000/external-edit-interface-kiranshastry-solid-kiranshastry.png"/>
-                </button>
-             
-            </td>
+                <th class="text-right">Sum</th>
+                <th class="text-right">Name</th>
+                <th class="text-right">Date Time</th>
+                <th class="text-right">Description</th>
+                <th class="text-center">Actions</th>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in model)
+            {
+
+                <tr>
+                    @if (item.IsIncome)
+                    {
+                        <td class="text-right" style="color:red">@item.SumExpenditure</td>
+                        <td class="text-right">@item.NameCategory</td>
+                        <td class="text-right">@item.CurrentDate</td>
+                        <td class="text-right">@item.DescriptionCategory</td>
+
+                    }
+                    else
+                    {
+                        <td class="text-right" style="color:green">@item.SumReceipt</td>
+                        <td class="text-right">@item.NameCategory</td>
+                        <td class="text-right">@item.CurrentDate</td>
+                        <td class="text-right">@item.DescriptionCategory</td>
+                    }
+
+
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-dark">
+                            @*<i style='font-size:14px' @onclick="(() => Edit(item.Id))" class='far fa-edit'></i>*@
+                            <img @onclick="(() => Edit(item.Id))" src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/21/000000/external-edit-interface-kiranshastry-solid-kiranshastry.png" />
+                        </button>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+    @code {
+
+        IEnumerable<CategoryDto> model = new List<CategoryDto>();
+
+
+        protected override async Task OnInitializedAsync()
+        {
+            model = CategoryAdapter.GetCategory();
         }
-    </tbody>
-</table>
+
+        protected void Edit(int id)
+        {
+            _navigationManager.NavigateTo("/edit-category/" + id);
+        }
 
 
-
-@code {
-
-    IEnumerable<CategoryDto> model = new List<CategoryDto>();
-    
-
-    protected override async Task OnInitializedAsync()
-    {
-        model = CategoryAdapter.GetCategory();
     }
-
-    protected void Edit(int id)
-    {
-        _navigationManager.NavigateTo("/edit-category/" + id);
-    }
-
-   
-}
