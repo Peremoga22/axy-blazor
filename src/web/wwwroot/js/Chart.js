@@ -1,4 +1,4 @@
-﻿function GeneraPieChartBalans(sumList) {
+﻿function GeneraPieChartBalans(sumBalans) {
     am4core.useTheme(am4themes_animated);
 
     var chart = am4core.create("chartdiv", am4charts.PieChart3D);
@@ -6,11 +6,11 @@
 
     chart.legend = new am4charts.Legend();
 
-    chart.data = sumList;
+    chart.data = sumBalans;
 
 
     var series = chart.series.push(new am4charts.PieSeries3D());
-    series.dataFields.value = "sumPercentage";
+    series.dataFields.value = "sumPercentage1";
  
     series.dataFields.category = "nameCategory";    
 }
@@ -27,7 +27,7 @@ function GeneraPieChartExpenditure(sumList) {
 
 
     var series = chart.series.push(new am4charts.PieSeries3D());
-    series.dataFields.value = "sumPercentage";
+    series.dataFields.value = "sumPercentage2";
 
     series.dataFields.category = "nameCategory";
 }
@@ -44,7 +44,7 @@ function GeneraPieChartReceipt(sumList) {
 
 
     var series = chart.series.push(new am4charts.PieSeries3D());
-    series.dataFields.value = "sumPercentage";
+    series.dataFields.value = "sumPercentage3";
 
     series.dataFields.category = "nameCategory";
 }

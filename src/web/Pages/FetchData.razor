@@ -5,7 +5,6 @@
 @implements IDisposable
 
 <div>
-   
     <div class="jumbotron">
         <div class="well span6" style="padding-top: 50px">
             <h3 class="text-center">
@@ -39,9 +38,13 @@
 
 @code{
     CategoryDto model = new CategoryDto();
-    List<SumPieDto> sumList = new List<SumPieDto>();
+
+    List<SumBalans> sumBalans = new List<SumBalans>();
+    List<SumExpenditure> sumExpenditures = new List<SumExpenditure>();
+    List<SumReceipt> sumReceipt = new List<SumReceipt>();
+
+
     IEnumerable<CategoryDto> categoryList = new List<CategoryDto>();
-    SumPieDto pie = new SumPieDto();
     private Timer timerObj = new(1000);
 
 
@@ -56,84 +59,81 @@
     private async Task GeneratePieChartBlazorBalans()
     {
         categoryList = CategoryAdapter.GetCategorySum();
-        int count = 1;
+        var expenditureAll = categoryList.Select(z => z.BalansExpenditure).FirstOrDefault();
+        var recieptAll = categoryList.Select(z => z.BalansRecipt).FirstOrDefault();
+        var remainderSum = recieptAll - expenditureAll;
+        sumBalans.Add(new SumBalans() { NameCategory = "Outcome", SumReceipt = recieptAll, SumExpenditure = remainderSum });
+        sumBalans.Add(new SumBalans() { NameCategory = " Income", SumReceipt = recieptAll, SumExpenditure = 0 });
 
-        pie.SumExpenditure = categoryList.Select(z => z.SumExpenditure).FirstOrDefault();
-        pie.SumReceipt = categoryList.Select(z => z.SumReceipt).FirstOrDefault();
+        //foreach (var item in categoryList)
+        //{
+        //    sumBalans.Add(new SumBalans() { NameCategory = item.DescriptionCategory, SumReceipt = item.BalansRecipt, SumExpenditure = item.SumExpenditure });
 
-        foreach (var item in categoryList)
-        {
-            sumList.Add(new SumPieDto() { NameCategory = item.DescriptionCategory, SumReceipt = item.BalansRecipt, SumExpenditure = item.SumExpenditure });
+        //    if (categoryList.Count() == count)
+        //    {
+        //        var remainderSum = item.BalansRecipt - item.BalansExpenditure;
+        //        sumBalans.Add(new SumBalans() { NameCategory = "Amount on the balance.", SumReceipt = item.BalansRecipt, SumExpenditure = remainderSum });
+        //        break;
+        //    }
 
-            if (categoryList.Count() == count)
-            {
-                var remainderSum = item.BalansRecipt - item.BalansExpenditure;
-                sumList.Add(new SumPieDto() { NameCategory = "Amount on the balance.", SumReceipt = item.BalansRecipt, SumExpenditure = remainderSum });
-                break;
-            }
 
-            count++;
-        }
+        //}
 
-        //sumList.Add(new SumPieDto() { NameCategory = "Комунальні", SumReceipt = 2000, SumExpenditure = 100 });
-        //sumList.Add(new SumPieDto() { NameCategory = "Харчування", SumReceipt = 2000, SumExpenditure = 300}) ;
-        //sumList.Add(new SumPieDto() { NameCategory = "Відпочинок", SumReceipt = 2000, SumExpenditure = 500 });
-        //sumList.Add(new SumPieDto() { NameCategory = "Cума на залишку", SumReceipt = 2000, SumExpenditure = 1100 });
+        //sumBalans.Add(new SumBalans() { NameCategory = "Комунальні", SumReceipt = 2000, SumExpenditure = 100 });
+        //sumBalans.Add(new SumBalans() { NameCategory = "Харчування", SumReceipt = 2000, SumExpenditure = 300 });
+        //sumBalans.Add(new SumBalans() { NameCategory = "Відпочинок", SumReceipt = 2000, SumExpenditure = 500 });
+        //sumBalans.Add(new SumBalans() { NameCategory = "Cума на залишку", SumReceipt = 2000, SumExpenditure = 1100 });
 
-        await _jsRuntime.InvokeVoidAsync("GeneraPieChartBalans", sumList);
-
-        Dispose();
+        await _jsRuntime.InvokeVoidAsync("GeneraPieChartBalans", sumBalans);
     }
 
     private async Task GeneratePieChartBlazorExpenditure()
     {
-        categoryList = CategoryAdapter.GetCategorySum();
+        categoryList = CategoryAdapter.GetCategory();
+        var  categorySum = CategoryAdapter.GetCategorySum();
+        var receiptSum = categorySum.Select(z => z.BalansRecipt).FirstOrDefault();
         int count = 1;
 
-        pie.SumExpenditure = categoryList.Select(z => z.SumExpenditure).FirstOrDefault();
-        pie.SumReceipt = categoryList.Select(z => z.SumReceipt).FirstOrDefault();
 
-        foreach (var item in categoryList)
+        foreach (var item in categoryList.Where(z => z.SumExpenditure > 0).ToList())
         {
-            sumList.Add(new SumPieDto() { NameCategory = item.DescriptionCategory, SumReceipt = item.BalansRecipt, SumExpenditure = item.SumExpenditure });
+            sumExpenditures.Add(new SumExpenditure() { NameCategory = item.DescriptionCategory, SumReceipt = receiptSum, SumExpenditure = item.SumExpenditure });
 
-            if (categoryList.Count() == count)
-            {
-                var remainderSum = item.BalansRecipt - item.BalansExpenditure;
-                sumList.Add(new SumPieDto() { NameCategory = "Amount on the balance.", SumReceipt = item.BalansRecipt, SumExpenditure = remainderSum });
-                break;
-            }
+            //if (categoryList.Count() == count)
+            //{
+            //    var remainderSum = item.BalansRecipt - item.BalansExpenditure;
+            //    sumExpenditures.Add(new SumExpenditure() { NameCategory = "Amount on the balance.", SumReceipt = item.BalansRecipt, SumExpenditure = remainderSum });
+            //    break;
+            //}
 
             count++;
         }
 
-        await _jsRuntime.InvokeVoidAsync("GeneraPieChartExpenditure", sumList);
+        await _jsRuntime.InvokeVoidAsync("GeneraPieChartExpenditure", sumExpenditures);
     }
 
 
     private async Task GeneratePieChartBlazorReceipt()
     {
-        categoryList = CategoryAdapter.GetCategorySum();
+        categoryList = CategoryAdapter.GetCategory();
         int count = 1;
 
-        pie.SumExpenditure = categoryList.Select(z => z.SumExpenditure).FirstOrDefault();
-        pie.SumReceipt = categoryList.Select(z => z.SumReceipt).FirstOrDefault();
 
-        foreach (var item in categoryList)
+        foreach (var item in categoryList.Where(z=>z.SumReceipt>0).ToList())
         {
-            sumList.Add(new SumPieDto() { NameCategory = item.DescriptionCategory, SumReceipt = item.BalansRecipt, SumExpenditure = item.SumExpenditure });
+            sumReceipt.Add(new SumReceipt() { NameCategory = item.DescriptionCategory, SumReceipt = item.SumReceipt, SumExpenditure = 0});
 
-            if (categoryList.Count() == count)
-            {
-                var remainderSum = item.BalansRecipt - item.BalansExpenditure;
-                sumList.Add(new SumPieDto() { NameCategory = "Amount on the balance.", SumReceipt = item.BalansRecipt, SumExpenditure = remainderSum });
-                break;
-            }
+            //if (categoryList.Count() == count)
+            //{
+            //    var remainderSum = item.BalansRecipt - item.BalansExpenditure;
+            //    sumList.Add(new SumPieDto() { NameCategory = "Amount on the balance.", SumReceipt = item.BalansRecipt, SumExpenditure = remainderSum });
+            //    break;
+            //}
 
             count++;
         }
 
-        await _jsRuntime.InvokeVoidAsync("GeneraPieChartReceipt", sumList);
+        await _jsRuntime.InvokeVoidAsync("GeneraPieChartReceipt", sumReceipt);
     }
 
     public void Dispose()
