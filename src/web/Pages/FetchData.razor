@@ -7,10 +7,10 @@
 <div class="text-center">
     <div class="jumbotron">
         <div id="chartdiv"></div>
-        <br />
-        <button class="btn btn btn-outline-info" @onclick="GeneratePieChartBlazor">Generate Pie Chart</button>
+        <br />           
     </div>
 </div>
+
 
 
 
@@ -21,6 +21,13 @@
     SumPieDto pie = new SumPieDto();
     private Timer timerObj = new(1000);
 
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        GeneratePieChartBlazor();
+    }
+
     private async Task GeneratePieChartBlazor()
     {
         categoryList = CategoryAdapter.GetCategorySum();
@@ -29,11 +36,11 @@
         pie.SumExpenditure = categoryList.Select(z => z.SumExpenditure).FirstOrDefault();
         pie.SumReceipt = categoryList.Select(z => z.SumReceipt).FirstOrDefault();
 
-        foreach(var item in categoryList)
+        foreach (var item in categoryList)
         {
             sumList.Add(new SumPieDto() { NameCategory = item.DescriptionCategory, SumReceipt = item.BalansRecipt, SumExpenditure = item.SumExpenditure });
 
-            if (categoryList.Count()  == count)
+            if (categoryList.Count() == count)
             {
                 var remainderSum = item.BalansRecipt - item.BalansExpenditure;
                 sumList.Add(new SumPieDto() { NameCategory = "Amount on the balance.", SumReceipt = item.BalansRecipt, SumExpenditure = remainderSum });
@@ -43,21 +50,16 @@
             count++;
         }
 
-
-
         //sumList.Add(new SumPieDto() { NameCategory = "Комунальні", SumReceipt = 2000, SumExpenditure = 100 });
         //sumList.Add(new SumPieDto() { NameCategory = "Харчування", SumReceipt = 2000, SumExpenditure = 300}) ;
         //sumList.Add(new SumPieDto() { NameCategory = "Відпочинок", SumReceipt = 2000, SumExpenditure = 500 });
         //sumList.Add(new SumPieDto() { NameCategory = "Cума на залишку", SumReceipt = 2000, SumExpenditure = 1100 });
 
-
-
-
-
         await _jsRuntime.InvokeVoidAsync("GeneraPieChart", sumList);
 
         Dispose();
     }
+    
 
     public void Dispose()
     {
