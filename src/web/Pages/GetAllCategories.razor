@@ -35,7 +35,7 @@
         <div class="row">
             <div class="ml-lg-3 m-3">
                 <button type="submit" class="btn btn-primary">&nbsp;Search&nbsp;</button>
-                <NavLink class="btn btn-outline-secondary" @onclick="ResetSearch">&nbsp;Cancel&nbsp;</NavLink>
+                <NavLink class="btn btn-outline-secondary" @onclick="ResetSearch">&nbsp;Reset&nbsp;</NavLink>
             </div>
         </div>
     </EditForm>
@@ -172,6 +172,8 @@
 
        private void Collaps()
        {
+           model.StartDate = DateTime.Now;
+           model.EndDate = DateTime.Now;
            Collapsed = !Collapsed;
        }
 

@@ -219,12 +219,24 @@
 
     private void HandleValidSubmitPopupReciept()
     {
-
+        var receipt = new ReceiptDto();
+        receipt.Id = modelReciept.Id;
+        receipt.Name = modelReciept.Name;
+        receipt.Sum = modelReciept.Sum;
+        ReceiptAdapter.SaveReceipt(receipt);
+        popupReceipt = false;
+        receipts = ReceiptAdapter.GetReceipt();
     }
 
     private void HandleValidSubmitPopupExpenditure()
     {
-
+        var expenditure = new ExpenditureDto();
+        expenditure.Id = modelExpenditure.Id;
+        expenditure.Name = modelExpenditure.Name;
+        expenditure.Sum = modelExpenditure.Sum;
+        ExpenditureAdapter.SaveExpenditure(expenditure);
+        popupExpenditure = false;
+        expenditures = ExpenditureAdapter.GetExpenditure();
     }
 
     private void DeleteReceipt(int id)

@@ -99,7 +99,7 @@
     protected override async Task OnInitializedAsync()
     {
         model.CurrentDate = DateTime.Now;
-        receiptModel = ReceiptAdapter.GetReceipt().Where(z=>z.Sum == 0).ToList();
+        receiptModel = ReceiptAdapter.GetReceipt().ToList();
         var getSum = CategoryAdapter.GetCategorySum();
         var sumReceipt = getSum.Select(z => z.BalansRecipt).FirstOrDefault();
         var sumExpenditure = getSum.Select(z => z.BalansExpenditure).FirstOrDefault();
@@ -169,11 +169,11 @@
     {
         if (Approved)
         {
-            receiptModel = ReceiptAdapter.GetReceipt().Where(z=>z.Sum == 0).ToList();
+            receiptModel = ReceiptAdapter.GetReceipt().ToList();
         }
         else
         {
-            expenditureModel = ExpenditureAdapter.GetExpenditure().Where(z => z.Sum == 0).ToList();
+            expenditureModel = ExpenditureAdapter.GetExpenditure().ToList();
         }
 
         Approved = !Approved;
