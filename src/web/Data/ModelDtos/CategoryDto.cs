@@ -11,6 +11,8 @@ namespace web.Data.ModelDtos
         public string NameCategory { get; set; } 
         public string DescriptionCategory { get; set; } 
         public DateTime CurrentDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public bool IsIncome { get; set; }
         public string NameReceipt { get; set; } 
         public decimal SumReceipt { get; set; } 

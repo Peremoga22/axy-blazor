@@ -45,6 +45,48 @@ namespace web.Data.Adapters
             return result;
         }
 
+
+        public static IEnumerable<CategoryDto> GetCategoryList(CategoryDto model)
+        {
+            var result = new List<CategoryDto>();
+
+            var startDate = "yyyy-MM-dd HH:mm:ss:fff";
+            var startDateString = model.StartDate.ToString(startDate);
+            var endDate = "yyyy-MM-dd HH:mm:ss:fff";
+            var endDateString = model.EndDate.ToString(endDate);
+            string sql = null;
+
+            sql = string.Format(@"exec [sp_GetCategoryFilter] {0}, {1},{2}",
+            DataBaseHelper.SafeSqlString(startDateString),
+            DataBaseHelper.SafeSqlString(endDateString),
+            DataBaseHelper.SafeSqlString(model.IsIncome));          
+            var sqlResult = DataBaseHelper.GetSqlResult(sql);
+
+            if (sqlResult.Rows.Count > 0)
+            {
+                foreach (DataRow item in sqlResult.Rows)
+                {
+                    result.Add(new CategoryDto
+                    {
+                        Id = DataBaseHelper.GetIntegerValueFromRowByName(item, "CategoryId"),
+                        NameCategory = DataBaseHelper.GetValueFromRowByName(item, "CategoryName"),
+                        DescriptionCategory = DataBaseHelper.GetValueFromRowByName(item, "Description"),
+                        CurrentDate = DataBaseHelper.GetDateTimeValueFromRowByName(item, "CurentData"),
+                        IsIncome = DataBaseHelper.GetBoolValueFromRowByName(item, "IsIncome"),
+                        ReceiptId = DataBaseHelper.GetIntegerValueFromRowByName(item, "ReceiptId"),
+                        NameReceipt = DataBaseHelper.GetValueFromRowByName(item, "NameReceipt"),
+                        SumReceipt = DataBaseHelper.GetDecimalValueFromRowByName(item, "SumReceipt"),
+                        ExpenditureId = DataBaseHelper.GetIntegerValueFromRowByName(item, "ExpenditureId"),
+                        NameExpenditure = DataBaseHelper.GetValueFromRowByName(item, "NameExpenditure"),
+                        SumExpenditure = DataBaseHelper.GetDecimalValueFromRowByName(item, "SumExpenditure")
+
+                    });
+                }
+            }
+
+            return result;
+        }
+
         public static void SaveCategory(CategoryDto model)
         {
             if (model.Id > 0)
